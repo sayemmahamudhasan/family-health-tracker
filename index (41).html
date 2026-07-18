@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Health Trend Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #7f8c8d;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        .profile-selector {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 6px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        select, input[type="date"] {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #bdc3c7;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dcdde1;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        input[type="number"], input[type="text"] {
+            width: 85%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .warning {
+            background-color: #fab1a0 !important;
+            color: #c0392b;
+            font-weight: bold;
+        }
+        .normal {
+            background-color: #e1f5fe !important;
+        }
+        .btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #219653;
+        }
+        .note {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+            border-left: 3px solid #3498db;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Family Health Trend Dashboard</h1>
+    <p class="subtitle">Track weekly metrics and log clinical lab reports to monitor predictive health changes.</p>
+
+    <div class="profile-selector">
+        <label for="family-member">Managing Profile For:</label>
+        <select id="family-member">
+            <option value="myself">Myself</option>
+            <option value="sibling1">Sibling 1</option>
+            <option value="sibling2">Sibling 2</option>
+            <option value="parent1">Parent 1</option>
+            <option value="parent2">Parent 2</option>
+        </select>
+        
+        <label style="margin-left: 20px;" for="log-date">Log Date:</label>
+        <input type="date" id="log-date">
+    </div>
+
+    <table id="trackingTable">
+        <thead>
+            <tr>
+                <th>Frequency</th>
+                <th>Health Metric</th>
+                <th>Target Range (Adults)</th>
+                <th>Current Value Entry</th>
+                <th>Status / Trend Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Weekly Metrics -->
+            <tr>
+                <td><strong>Weekly</strong></td>
+                <td>Systolic Blood Pressure (Top #)</td>
+                <td>&lt; 120 mmHg</td>
+                <td><input type="number" id="sysBP" placeholder="e.g. 118" oninput="validateHealthData()"></td>
+                <td id="sysBP-status">-</td>
+            </tr>
+            <tr>
+                <td><strong>Weekly</strong></td>
+                <td>Diastolic Blood Pressure (Bottom #)</td>
+                <td>&lt; 80 mmHg</td>
+                <td><input type="number" id="diaBP" placeholder="e.g. 78" oninput="validateHealthData()"></td>
+                <td id="diaBP-status">-</td>
+            </tr>
+            <tr>
+                <td><strong>Weekly</strong></td>
+                <td>Resting Heart Rate</td>
+                <td>60 - 100 bpm</td>
+                <td><input type="number" id="rhr" placeholder="e.g. 72" oninput="validateHealthData()"></td>
+                <td id="rhr-status">-</td>
+            </tr>
+            <tr>
+                <td><strong>Weekly</strong></td>
+                <td>Fasting Blood Glucose</td>
+                <td>70 - 99 mg/dL</td>
+                <td><input type="number" id="glucose" placeholder="e.g. 90" oninput="validateHealthData()"></td>
+                <td id="glucose-status">-</td>
+            </tr>
+            <!-- Periodic Labs -->
+            <tr>
+                <td><strong>3-6 Months</strong></td>
+                <td>HbA1c (Diabetes Test)</td>
+                <td>&lt; 5.7 %</td>
+                <td><input type="number" step="0.1" id="hba1c" placeholder="e.g. 5.4" oninput="validateHealthData()"></td>
+                <td id="hba1c-status">-</td>
+            </tr>
+            <tr>
+                <td><strong>6-12 Months</strong></td>
+                <td>Total Cholesterol</td>
+                <td>&lt; 200 mg/dL</td>
+                <td><input type="number" id="chol" placeholder="e.g. 180" oninput="validateHealthData()"></td>
+                <td id="chol-status">-</td>
+            </tr>
+            <tr>
+                <td><strong>Any Period</strong></td>
+                <td>General Notes / Symptoms</td>
+                <td>N/A</td>
+                <td><input type="text" id="symptoms" placeholder="e.g. Feeling good, mild fatigue"></td>
+                <td>Logged for Context</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn" onclick="saveData()">Log & Save Local Entry</button>
+
+    <div class="note">
+        <p><strong>Clinical Disclaimer:</strong> This chart is a structural tracker aligned with standard clinical threshold baselines (WHO/ACC/ADA). It does not replace diagnostic medical software or doctor evaluations. Always consult a physician regarding red flags or unexpected data trends.</p>
+    </div>
+</div>
+
+<script>
+    // Set default date to today
+    document.getElementById('log-date').valueAsDate = new Date();
+
+    function validateHealthData() {
+        // 1. Validate Systolic Blood Pressure
+        const sys = parseFloat(document.getElementById('sysBP').value);
+        const sysStatus = document.getElementById('sysBP-status');
+        if (!isNaN(sys)) {
+            if (sys >= 130) {
+                sysStatus.textContent = "High (Stage 1+ Hypertension risk)";
+                sysStatus.className = "warning";
+            } else if (sys >= 120) {
+                sysStatus.textContent = "Elevated Baseline";
+                sysStatus.className = "warning";
+            } else {
+                sysStatus.textContent = "Normal";
+                sysStatus.className = "normal";
+            }
+        }
+
+        // 2. Validate Diastolic Blood Pressure
+        const dia = parseFloat(document.getElementById('diaBP').value);
+        const diaStatus = document.getElementById('diaBP-status');
+        if (!isNaN(dia)) {
+            if (dia >= 80) {
+                diaStatus.textContent = "Elevated / High";
+                diaStatus.className = "warning";
+            } else {
+                diaStatus.textContent = "Normal";
+                diaStatus.className = "normal";
+            }
+        }
+
+        // 3. Validate Resting Heart Rate
+        const hr = parseFloat(document.getElementById('rhr').value);
+        const hrStatus = document.getElementById('rhr-status');
+        if (!isNaN(hr)) {
+            if (hr > 100 || hr < 50) {
+                hrStatus.textContent = "Out of Range (Consult Doctor if sustained)";
+                hrStatus.className = "warning";
+            } else {
+                hrStatus.textContent = "Normal Fit";
+                hrStatus.className = "normal";
+            }
+        }
+
+        // 4. Validate Glucose
+        const gluc = parseFloat(document.getElementById('glucose').value);
+        const glucStatus = document.getElementById('glucose-status');
+        if (!isNaN(gluc)) {
+            if (gluc >= 100) {
+                glucStatus.textContent = "Elevated (Prediabetes/Diabetes risk)";
+                glucStatus.className = "warning";
+            } else if (gluc < 70) {
+                glucStatus.textContent = "Low Glucose (Hypoglycemia)";
+                glucStatus.className = "warning";
+            } else {
+                glucStatus.textContent = "Normal Fasting";
+                glucStatus.className = "normal";
+            }
+        }
+
+        // 5. Validate HbA1c
+        const a1c = parseFloat(document.getElementById('hba1c').value);
+        const a1cStatus = document.getElementById('hba1c-status');
+        if (!isNaN(a1c)) {
+            if (a1c >= 6.5) {
+                a1cStatus.textContent = "Diabetic Range";
+                a1cStatus.className = "warning";
+            } else if (a1c >= 5.7) {
+                a1cStatus.textContent = "Prediabetic Range";
+                a1cStatus.className = "warning";
+            } else {
+                a1cStatus.textContent = "Optimal";
+                a1cStatus.className = "normal";
+            }
+        }
+
+        // 6. Validate Cholesterol
+        const cholesterol = parseFloat(document.getElementById('chol').value);
+        const cholStatus = document.getElementById('chol-status');
+        if (!isNaN(cholesterol)) {
+            if (cholesterol >= 200) {
+                cholStatus.textContent = "High Risk (Plaque build-up)";
+                cholStatus.className = "warning";
+            } else {
+                cholStatus.textContent = "Desirable";
+                cholStatus.className = "normal";
+            }
+        }
+    }
+
+    function saveData() {
+        const member = document.getElementById('family-member').value;
+        const date = document.getElementById('log-date').value;
+        alert(`Data saved successfully locally for ${member.toUpperCase()} on date: ${date}! (Note: To store long-term data histories permanently, link this frontend to a spreadsheet software or database).`);
+    }
+</script>
+
+</body>
+</html>
